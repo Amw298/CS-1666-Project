@@ -69,6 +69,11 @@ fn run() -> Result<(), String> {
                 canvas.copy(&texture, None, None)?;
                 canvas.present();
             }
+            i if i < 1400 => {
+                texture = texture_creator.load_texture("images/credits/zih_credit.jpg")?;
+                canvas.copy(&texture, None, None)?;
+                canvas.present();
+            }
             _ => {
                 texture = texture_creator.load_texture("images/credits/credits_title.png")?;
             }
@@ -76,7 +81,7 @@ fn run() -> Result<(), String> {
 
 	i += 1;
 
-        if(i > 1000) {
+        if(i > 1400) {
             i = 0;
         }
     }
