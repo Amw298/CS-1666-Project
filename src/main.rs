@@ -166,8 +166,8 @@ impl Game for ROGUELIKE {
 
 			// SET BACKGROUND
 			let cur_bg = Rect::new(
-				((player.x() + ((player.width() / 2) as i32)) - ((CAM_W / 2) as i32)),
-				((player.y() + ((player.height() / 2) as i32)) - ((CAM_H / 2) as i32)),
+				((player.x() + ((player.width() / 2) as i32)) - ((CAM_W / 2) as i32)).clamp(0, (CAM_W) as i32),
+				((player.y() + ((player.height() / 2) as i32)) - ((CAM_H / 2) as i32)).clamp(0, (CAM_H) as i32),
 				CAM_W,
 				CAM_H,
 			);
@@ -217,7 +217,7 @@ impl ROGUELIKE {
 				}
 				let src = Rect::new(0, 0, TILE_SIZE, TILE_SIZE);
 				let pos = Rect::new(i * TILE_SIZE as i32, j * TILE_SIZE as i32, TILE_SIZE, TILE_SIZE);
-				self.core.wincan.copy(&texture, src, pos)?;
+				self.core.wincan.copy(&texture, *cur_bg, pos)?;
 			}
 		}
 		Ok(())
@@ -332,42 +332,6 @@ impl ROGUELIKE {
 		player.update_pos((0, (CAM_W - TILE_SIZE) as i32), (0, (CAM_H - TILE_SIZE) as i32));
 	}
 
-	//update background
-	pub fn update_background(&mut self, mut player: &mut Player) -> Result<(), String> {
-		let cur_bg = Rect::new(
-			((player.x() + ((player.width() / 2) as i32)) - ((CAM_W / 2) as i32)).clamp(0, (BG_W - CAM_W) as i32),
-			((player.y() + ((player.height() / 2) as i32)) - ((CAM_H / 2) as i32)).clamp(0, (BG_H - CAM_H) as i32),
-			CAM_W,
-			CAM_H,
-		);
-
-		// Convert player's map position to be camera-relative
-		let player_cam_pos = Rect::new(
-			player.x() - cur_bg.x(),
-			player.y() - cur_bg.y(),
-			TILE_SIZE,
-			TILE_SIZE,
-		);
-
-		let texture_creator = self.core.wincan.texture_creator();
-		let background = background::Background::new(
-			texture_creator.load_texture("images/background/floor_tile_1.png")?,
-			// temp files bc i didn't feel like editing >>>>>
-			texture_creator.load_texture("images/background/floor_tile_2.png")?,	
-			texture_creator.load_texture("images/background/floor_tile_1.png")?,
-			1, 
-			1, 
-		);
-
-		self.core.wincan.set_draw_color(Color::BLACK);
-		self.core.wincan.clear();
-
-		// Draw subset of bg
-		self.core.wincan.copy(background.texture(), cur_bg, None).unwrap();
-		Ok(())
-	}
-
-
 // draw player
 	pub fn draw_player(&mut self, count: &i32, f_display: &i32, player: &mut Player, cur_bg: &Rect) {
 		let player_cam_pos = Rect::new(
@@ -379,9 +343,9 @@ impl ROGUELIKE {
 
 		if *(player.is_still()) {
 			if *(player.facing_right()) {
-				self.core.wincan.copy(player.texture_a_r(), player.src(), player_cam_pos).unwrap();
+				self.core.wincan.copy(player.texture_a_r(), player.src(), player.pos()).unwrap();
 			} else {
-				self.core.wincan.copy(player.texture_a_l(), player.src(), player_cam_pos).unwrap();
+				self.core.wincan.copy(player.texture_a_l(), player.src(), player.pos()).unwrap();
 			}
 
 			//display animation when not movinga
@@ -395,9 +359,9 @@ impl ROGUELIKE {
 		} else {
 			player.set_src(0, 0);
 			if *(player.facing_right()) {
-				self.core.wincan.copy(player.texture_r(), player.src(), player_cam_pos).unwrap();
+				self.core.wincan.copy(player.texture_r(), player.src(), player.pos()).unwrap();
 			} else {
-				self.core.wincan.copy(player.texture_l(), player.src(), player_cam_pos).unwrap();
+				self.core.wincan.copy(player.texture_l(), player.src(), player.pos()).unwrap();
 			}
 		}
 
