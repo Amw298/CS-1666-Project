@@ -28,9 +28,6 @@ use sdl2::render::WindowCanvas;
 
 use rogue_sdl::{Game, SDLCore};
 
-
-use sdl2::render::Texture;
-
 // window globals
 const TITLE: &str = "Roguelike";
 const CAM_W: u32 = 1280;
@@ -95,7 +92,7 @@ impl Game for ROGUELIKE {
         // reset frame
         let texture_creator = self.core.wincan.texture_creator();
 		let screen_width = 25;
-
+		
 		let mut rng = rand::thread_rng();
 		let mut count = 0;
 		let f_display = 15;
@@ -117,7 +114,7 @@ impl Game for ROGUELIKE {
 		// INITIALIZE ARRAY OF ENEMIES (SHOULD BE MOVED TO room.rs WHEN CREATED)
 		let mut enemies: Vec<Enemy> = Vec::with_capacity(2);	// Size is max number of enemies
 		let mut rngt = vec![0; enemies.capacity()+1]; // rngt[0] is the timer for the enemys choice of movement
-		let mut i=1;
+		let mut i=1; 
 		for _ in 0..enemies.capacity(){
 			let e = enemy::Enemy::new(
 				Rect::new(
@@ -132,7 +129,7 @@ impl Game for ROGUELIKE {
 			rngt[i] = rng.gen_range(1..5); // decides if an enemy moves
 			i+=1;
 		}
-
+		
 		// CREATE FIREBALL (SHOULD BE MOVED TO fireball.rs WHEN CREATED)
         let mut fireball = ranged_attack::RangedAttack::new(
 			Rect::new(
@@ -155,7 +152,7 @@ impl Game for ROGUELIKE {
 					_ => {},
 				}
 			}
-
+		
 			player.set_x_delta(0);
 			player.set_y_delta(0);
 
@@ -170,7 +167,7 @@ impl Game for ROGUELIKE {
 				// FOR TESTING ONLY: USE TO FOR PRINT VALUES
 				if keystate.contains(&Keycode::P) {
 					println!("\nx:{} y:{} ", enemies[0].x() as i32, enemies[0].y() as i32);
-					println!("{} {} {} {}", enemies[0].x() as i32, enemies[0].x() as i32 + (enemies[0].width() as i32), enemies[0].y() as i32, enemies[0].y() as i32 + (enemies[0].height() as i32));
+					println!("{} {} {} {}", enemies[0].x() as i32, enemies[0].x() as i32 + (enemies[0].width() as i32), enemies[0].y() as i32, enemies[0].y() as i32 + (enemies[0].height() as i32)); 
 				}
 			// CLEAR BACKGROUND
             let background = texture_creator.load_texture("images/background/bb.png")?;
@@ -209,12 +206,16 @@ impl Game for ROGUELIKE {
 			if player.is_attacking {
 				if *player.facing_right() {
 					let r = Rect::new(START_W + TILE_SIZE as i32, START_H, ATTACK_LENGTH, TILE_SIZE);
-					self.core.wincan.set_draw_color(Color::RED);
-					self.core.wincan.fill_rect(r);
+					let sword_r = texture_creator.load_texture("images/player/sword_r.png")?;
+					self.core.wincan.copy(&sword_r, None, r);
+					//self.core.wincan.set_draw_color(Color::RED);
+					//self.core.wincan.fill_rect(r);
 				} else {
 					let r = Rect::new(START_W - ATTACK_LENGTH as i32, START_H, ATTACK_LENGTH, TILE_SIZE);
-					self.core.wincan.set_draw_color(Color::RED);
-					self.core.wincan.fill_rect(r);
+					let sword_l = texture_creator.load_texture("images/player/sword_l.png")?;
+					self.core.wincan.copy(&sword_l, None, r);
+					//self.core.wincan.set_draw_color(Color::RED);
+					//self.core.wincan.fill_rect(r);
 				}
 			}
 
@@ -373,14 +374,6 @@ impl ROGUELIKE {
 			if check_collision(&player.pos(), &enemy.pos())
 			{
 				player.minus_hp(0.2);
-
-				let mut i = 0;
-				while i < 50 {
-					player.set_x(player.x() - 1);
-					i = i + 1;
-				}
-
-
 			}
 
 			if check_collision(&player.pos(), &enemy.pos())
@@ -446,10 +439,10 @@ impl ROGUELIKE {
 		let background = background::Background::new(
 			texture_creator.load_texture("images/background/floor_tile_1.png")?,
 			// temp files bc i didn't feel like editing >>>>>
-			texture_creator.load_texture("images/background/floor_tile_2.png")?,
+			texture_creator.load_texture("images/background/floor_tile_2.png")?,	
 			texture_creator.load_texture("images/background/floor_tile_1.png")?,
-			1,
-			1,
+			1, 
+			1, 
 		);
 
 		self.core.wincan.set_draw_color(Color::BLACK);
@@ -469,7 +462,8 @@ impl ROGUELIKE {
 			TILE_SIZE,
 			TILE_SIZE,
 		);
-
+		
+	
 		if *(player.is_still()) {
 			if *(player.facing_right()) {
 				self.core.wincan.copy(player.texture_a_r(), player.src(), player_cam_pos).unwrap();
@@ -477,7 +471,7 @@ impl ROGUELIKE {
 				self.core.wincan.copy(player.texture_a_l(), player.src(), player_cam_pos).unwrap();
 			}
 
-			//display animation when not movinga
+			//display animation when not moving
 			match count {
 				count if count < f_display => { player.set_src(0 as i32, 0 as i32); }
 				count if count < &(f_display * 2) => { player.set_src(64 as i32, 0 as i32); }
@@ -504,15 +498,16 @@ impl ROGUELIKE {
 			}
 		}
 		//println!("\nx:{} y:{} ", player.x(), player.y());
+		
 	}
 
 
 // force enemy movement
 
 	pub fn check_edge(enemy: &enemy::Enemy) -> bool{
-		if  enemy.x() <= XBOUNDS.0 as f64 ||
+		if  enemy.x() <= XBOUNDS.0 as f64 || 
 		enemy.x() >=  XBOUNDS.1 as f64 ||
-		enemy.y() <= YBOUNDS.0 as f64||
+		enemy.y() <= YBOUNDS.0 as f64|| 
 		enemy.y() >= YBOUNDS.1 as f64
 		{return true;}
 		else {return false;}

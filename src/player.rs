@@ -124,7 +124,7 @@ impl<'a> Player<'a> {
 		self.pos.set_x((self.x() + self.x_vel()).clamp(x_bounds.0, x_bounds.1));
 		self.pos.set_y((self.y() + self.y_vel()).clamp(y_bounds.0, y_bounds.1));
 	}
-
+	/*
 	pub fn draw(&mut self, core: &mut SDLCore, count: &i32, f_display: &i32){
 		if *(self.is_still()) {
 			if *(self.facing_right()) {
@@ -136,9 +136,19 @@ impl<'a> Player<'a> {
 			//display animation when not moving
 			match count {
 				count if count < f_display => { self.set_src(0 as i32, 0 as i32); }
-				count if count < &(f_display * 2) => { self.set_src(TILE_SIZE as i32, 0 as i32); }
-				count if count < &(f_display * 3) => { self.set_src(0 as i32, TILE_SIZE as i32); }
-				count if count < &(f_display * 4) => { self.set_src(TILE_SIZE as i32, TILE_SIZE as i32); }
+				count if count < &(f_display * 2) => { self.set_src(64 as i32, 0 as i32); }
+				count if count < &(f_display * 3) => { self.set_src(128 as i32, 0 as i32); }
+				count if count < &(f_display * 4) => { self.set_src(0 as i32, 64 as i32); }
+				count if count < &(f_display * 5) => { self.set_src(64 as i32, 64 as i32); }
+				count if count < &(f_display * 6) => { self.set_src(128 as i32, 64 as i32); }
+				count if count < &(f_display * 7) => { self.set_src(0 as i32, 128 as i32); }
+				count if count < &(f_display * 8) => { self.set_src(64 as i32, 128 as i32); }
+				count if count < &(f_display * 9) => { self.set_src(128 as i32, 128 as i32); }
+				count if count < &(f_display * 10) => { self.set_src(0 as i32, 192 as i32); }
+				count if count < &(f_display * 11) => { self.set_src(64 as i32, 192 as i32); }
+				count if count < &(f_display * 12) => { self.set_src(128 as i32, 192 as i32); }
+
+
 				_ => { self.set_src(0, 0); }
 			}
 		} else {
@@ -150,7 +160,7 @@ impl<'a> Player<'a> {
 			}
 		}
 	}
-
+	*/
 	pub fn src(&self) -> Rect {
 		self.src
 	}
@@ -254,13 +264,11 @@ impl<'a> Player<'a> {
 
 	/*pub fn base_attack(&mut self, x: i32, y: i32) {
 		self.is_attacking = true;
-
 		// create hitbox with set width and length between player(x,y) and clickpoint(x,y)
 		self.attack_box = new Rect::from_center(
 			Point::new((self.x() + x)/2, (self.y() + y)/2),
 			(self.x() - x).abs(),
 			(self.y() - y).abs());
-
 		println!("Attacked!");
 	}*/
 }
