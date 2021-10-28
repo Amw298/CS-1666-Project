@@ -133,7 +133,7 @@ impl Game for ROGUELIKE {
 					TILE_SIZE,
 					TILE_SIZE,
 				),
-				texture_creator.load_texture("images/enemies/place_holder_enemy.png")?,
+				texture_creator.load_texture("images/enemies/ranged_enemy.png")?,
 				enemy_type, 
 			);
 			enemies.push(e);
