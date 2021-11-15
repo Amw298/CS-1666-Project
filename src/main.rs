@@ -172,6 +172,94 @@ impl Game for ROGUELIKE {
 			xwalls, 
 			ywalls, 
 		);
+<<<<<<< Updated upstream
+=======
+		let mut map_data = map::Map::new(background);
+		map_data.create_map();
+		map_data.print_map(map_data.map);
+
+		// set starting position
+		player.set_x((map_data.starting_position.0 as i32 * TILE_SIZE as i32 - (CAM_W - TILE_SIZE_CAM) as i32 / 2) as f64);
+		player.set_y((map_data.starting_position.1 as i32 * TILE_SIZE as i32 - (CAM_H - TILE_SIZE_CAM) as i32 / 2) as f64);
+
+		let mut enemies: Vec<Enemy> = Vec::new();
+		let mut rngt = Vec::new();
+
+		/* let ghost_tex = texture_creator.load_texture("images/enemies/place_holder_enemy.png")?;
+		let gellem_tex = texture_creator.load_texture("images/enemies/ranged_enemy.png")?; */
+
+		let mut enemy_count = 0;
+		for h in 0..MAP_SIZE_H {
+			for w in 0..MAP_SIZE_W {
+				if map_data.enemy_and_object_spawns[h][w] == 0 {
+					continue;
+				}
+				if DEBUG { println!("{}, {}", w, h); }
+				match map_data.enemy_and_object_spawns[h][w] {
+					1 => {
+						let e = enemy::Enemy::new(
+							Rect::new(
+								w as i32 * TILE_SIZE as i32/*  - (player.x() % TILE_SIZE as f64) as i32 */ - (CAM_W as i32 - TILE_SIZE as i32) / 2,
+								h as i32 * TILE_SIZE as i32/*  - (player.y() % TILE_SIZE as f64) as i32 */ - (CAM_H as i32 - TILE_SIZE as i32) / 2,
+								TILE_SIZE,
+								TILE_SIZE
+							),
+							texture_creator.load_texture("images/enemies/place_holder_enemy.png")?,
+							EnemyType::Melee,
+							enemy_count,
+						);
+						enemies.push(e);
+						rngt.push(rng.gen_range(1..5));
+						enemy_count += 1;
+					}
+					2 => {
+						let e = enemy::Enemy::new(
+							Rect::new(
+								w as i32 * TILE_SIZE as i32/*  - (player.x() % TILE_SIZE as f64) as i32 */ - (CAM_W as i32 - TILE_SIZE as i32) / 2,
+								h as i32 * TILE_SIZE as i32/*  - (player.y() % TILE_SIZE as f64) as i32 */ - (CAM_H as i32 - TILE_SIZE as i32) / 2,
+								TILE_SIZE,
+								TILE_SIZE
+							),
+							texture_creator.load_texture("images/enemies/ranged_enemy.png")?,
+							EnemyType::Ranged,
+							enemy_count,
+						);
+						enemies.push(e);
+						rngt.push(rng.gen_range(1..5));
+						enemy_count += 1;
+					}
+					3 => {
+						let c = crateobj::Crate::new(
+							Rect::new(
+								w as i32 * TILE_SIZE as i32 - (CAM_W as i32 - TILE_SIZE as i32) /2,
+								h as i32 * TILE_SIZE as i32 - (CAM_H as i32 - TILE_SIZE as i32) /2,
+								TILE_SIZE,
+								TILE_SIZE
+							)
+						);
+						self.game_data.crates.push(c);
+					}
+					//new shield enemy
+					4 => {
+                        let e = enemy::Enemy::new(
+                    		Rect::new(
+                    			w as i32 * TILE_SIZE as i32/*  - (player.x() % TILE_SIZE as f64) as i32 */ - (CAM_W as i32 - TILE_SIZE as i32) / 2,
+                    			h as i32 * TILE_SIZE as i32/*  - (player.y() % TILE_SIZE as f64) as i32 */ - (CAM_H as i32 - TILE_SIZE as i32) / 2,
+                    			TILE_SIZE,
+                    			TILE_SIZE
+                    		    ),
+                    			texture_creator.load_texture("images/enemies/Shield_skeleton.png")?,
+                    			EnemyType::Melee,
+                    			enemy_count,
+                    		);
+                    		rngt.push(rng.gen_range(1..5));
+                    		enemy_count += 1;
+                    	}
+					_ => {}
+				}
+			}
+		}
+>>>>>>> Stashed changes
 
 		let mut all_frames = 0;
 		let mut last_time = Instant::now();
