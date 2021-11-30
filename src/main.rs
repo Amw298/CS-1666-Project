@@ -651,7 +651,6 @@ impl ROGUELIKE {
 		}
 		Ok(())	
 	}
-
 	// update projectiles
 	pub fn update_projectiles(player_projectiles: &mut Vec<Projectile>, enemy_projectiles: &mut Vec<Projectile>) {
 		for projectile in player_projectiles {
